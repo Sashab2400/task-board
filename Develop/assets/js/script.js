@@ -10,7 +10,7 @@ function generateTaskId() {
 
 }
 
-// Todo: create a function to create a task card
+
 function createTaskCard(task) {
     // Create a div element for the task card
     const card = document.createElement('div');
@@ -20,6 +20,7 @@ function createTaskCard(task) {
     card.innerHTML = `
         <div class="card-header bg-light">
             <h5 class="card-title">${task.name}</h5>
+            <button class="delete-task">Delete</button> <!-- Add a delete button -->
         </div>
         <div class="card-body">
             <p class="card-text">Description: ${task.description}</p>
@@ -27,6 +28,10 @@ function createTaskCard(task) {
             <p class="card-text">Status: ${task.status}</p>
         </div>
     `;
+
+    // Add event listener to the delete button
+    const deleteButton = card.querySelector('.delete-task');
+    deleteButton.addEventListener('click', handleDeleteTask);
 
     // Determine which swim lane to append the card based on the task status
     let lane;
@@ -51,15 +56,13 @@ function createTaskCard(task) {
 
     return card;
 }
-
 // Todo: create a function to render the task list and make cards draggable
 function renderTaskList() {
-    function renderTaskList() {
-        taskList.forEach(task => {
-            createTaskCard(task);
-        });
-    }
+    taskList.forEach(task => {
+        createTaskCard(task);
+    });
 }
+
 
 // Todo: create a function to handle adding a new task
 function handleAddTask(event) {
@@ -82,6 +85,11 @@ function handleAddTask(event) {
 
     // Add the new task to the taskList array
     taskList.push(newTask);
+   
+    
+
+    createTaskCard(newTask);
+    document.getElementById('task-form').reset();
 
     // Save the updated taskList array to localStorage
     localStorage.setItem('tasks', JSON.stringify(taskList));
@@ -112,57 +120,68 @@ function handleDeleteTask(event) {
 
         // Remove the task card from the DOM
         taskCard.remove();
+
+        document.addEventListener('click', handleDeleteTask);
     }
 }
 
 // Todo: create a function to handle dropping a task into a new status lane
 function handleDrop(event, ui) {
-    function handleDrop(event, ui) {
-        // Get the task card element being dropped
-        const taskCard = ui.draggable[0];
-    
-        // Get the task id associated with the task card
-        const taskId = parseInt(taskCard.dataset.taskId);
-    
-        // Determine the status lane where the task is being dropped
-        const newStatus = event.target.id; // Assuming the status lane IDs match the task status values
-    
-        // Find the task in the taskList array
-        const taskIndex = taskList.findIndex(task => task.id === taskId);
-    
-        if (taskIndex !== -1) {
-            // Update the status of the task in the taskList array
-            taskList[taskIndex].status = newStatus;
-    
-            // Save the updated taskList array to localStorage
-            localStorage.setItem('tasks', JSON.stringify(taskList));
-    
-            // Move the task card to the new status lane in the DOM
-            const newLane = document.getElementById(newStatus);
-            newLane.querySelector('.card-body').appendChild(taskCard);
-        }
+    // Get the task card element being dropped
+    const taskCard = ui.draggable[0];
+
+    // Get the task id associated with the task card
+    const taskId = parseInt(taskCard.dataset.taskId);
+
+    // Determine the status lane where the task is being dropped
+    const newStatus = event.target.id; // Assuming the status lane IDs match the task status values
+
+    // Find the task in the taskList array
+    const taskIndex = taskList.findIndex(task => task.id === taskId);
+
+    if (taskIndex !== -1) {
+        // Update the status of the task in the taskList array
+        taskList[taskIndex].status = newStatus;
+
+        // Save the updated taskList array to localStorage
+        localStorage.setItem('tasks', JSON.stringify(taskList));
+
+        // Move the task card to the new status lane in the DOM
+        const newLane = document.getElementById(newStatus);
+        newLane.querySelector('.card-body').appendChild(taskCard);
     }
-    
-    // Connect the handleDrop function to the HTML using jQuery UI's droppable feature
-    $('.status-lane').droppable({
-        drop: handleDrop
-    });
 }
 
-// Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
+// Connect the handleDrop function to the HTML using jQuery UI's droppable feature
+$('.status-lane').droppable({
+    drop: handleDrop
+});
+
 $(document).ready(function() {
-    $('#taskForm').submit(function(event) {
-      event.preventDefault();
-      
-      // Get form values
-      let taskName = $('#taskName').val();
-      let taskType = $('#taskType').val();
-      let dueDate = $('#dueDate').val();
-      
-      // Add the task to the board or perform any necessary actions
-      // For example, you can create a new card in the To Do section
-      
-      // Close the modal
-      $('#formModal').modal('hide');
+    renderTaskList(); // Call the function to render the task list
+
+
+// Function to handle form submission and closing the modal
+$('#taskForm').submit(function(event) {
+    event.preventDefault();
+
+    // Get form values and add the task to the board
+
+    // Close the modal
+    $('#formModal').modal('hide');
+});
+    $(document).on('click', '#add-task-btn', function(event) {
+        event.preventDefault();
+        $('#taskForm').submit();
     });
-  });
+});
+
+// Function to render the task list when the page loads
+function renderTaskList() {
+    // Check if taskList is not null before iterating over it
+    if (taskList) {
+        taskList.forEach(task => {
+            createTaskCard(task);
+        });
+    }
+}
