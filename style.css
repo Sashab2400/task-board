@@ -26,13 +26,3 @@ body {
   cursor: grab;
 }
 
-
-
-
-.project-late {
-  background-color: var(--lightred);
-}
-
-.project-today {
-  background-color: var(--lightyellow);
-}

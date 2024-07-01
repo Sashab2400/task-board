@@ -23,7 +23,7 @@
       href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
     />
 
-    <link rel="stylesheet" href="./assets/css/style.css" />
+    <link rel="stylesheet" href="./style.css" />
     <title>Task Board</title>
   </head>
 
@@ -42,7 +42,7 @@
           Add Task
         </button>
       </div>
-      <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
+    <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -52,21 +52,18 @@
           <div class="modal-body">
             <form id="taskForm">
               <div class="mb-3">
-                <label for="taskName" class="form-label">Task Name</label>
+                <label for="taskName" class="form-label">Task Title</label>
                 <input type="text" class="form-control" id="taskName" required>
               </div>
               <div class="mb-3">
-                <label for="taskType" class="form-label">Task Type</label>
-                <select class="form-select" id="taskType" required>
-                  <option value="">Select Type</option>
-                  <option value="Development">Development</option>
-                  <option value="Design">Design</option>
-                  <option value="Testing">Testing</option>
-                </select>
+                <div class="mb-3">
+                  <label for="dueDate" class="form-label">Task Due Date</label>
+                  <input type="date" class="form-control" id="dueDate" required>
+                </div>
               </div>
               <div class="mb-3">
-                <label for="dueDate" class="form-label">Due Date</label>
-                <input type="date" class="form-control" id="dueDate" required>
+                <label for="description" class="form-label">Description</label>
+                <input type="text" class="form-control" id="description" required>
               </div>
               <button type="submit" class="btn btn-primary">Add Task</button>
             </form>
@@ -127,6 +124,6 @@
       crossorigin="anonymous"
     ></script>
 
-    <script src="./assets/js/script.js"></script>
+    <script src="./script.js"></script>
   </body>
 </html>

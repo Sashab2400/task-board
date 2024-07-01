@@ -1,19 +1,20 @@
-// Retrieve tasks and nextId from localStorage
-let taskList = JSON.parse(localStorage.getItem("tasks"));
-let nextId = JSON.parse(localStorage.getItem("nextId"));
+let taskList = localStorage.getItem("tasks") ? $.parseJSON(localStorage.getItem("tasks")) : [];
+let nextId = localStorage.getItem("nextId") ? $.parseJSON(localStorage.getItem("nextId")) : 0;
 
 // Todo: create a function to generate a unique task id
 function generateTaskId() {
-  const taskId = nextId;
-  nextId++;
-  localStorage.setItem("nextId", JSON.stringify(nextId));
-  return nextId;
+    nextId++;
+    localStorage.setItem("nextId", JSON.stringify(nextId));
+    return nextId;
 }
+
+
+
 
 function createTaskCard(task) {
   // Create a div element for the task card
-  const card = $("div");
-  card.addClass("card mb-3");
+  const card = $("div");-
+  card.addClass("card border-light mb-3 lane flex-grow-1");
 
   // Set the task card content
   card.html(`
@@ -156,9 +157,12 @@ $(".status-lane").droppable({
   drop: handleDrop,
 });
 
-$(document).ready(function () {
-  renderTaskList(); // Call the function to render the task list
-  // Function to handle form submission and closing the modal
+
+$(document).ready(function() {
+    let now = dayjs();
+    renderTaskList(); // Call the function to render the task list
+});
+
   $("#taskForm").submit(function (event) {
     event.preventDefault();
 
@@ -189,7 +193,7 @@ $(document).ready(function () {
     event.preventDefault();
     $("#taskForm").submit();
   });
-});
+
 
 // Function to render the task list when the page loads
 function renderTaskList() {
