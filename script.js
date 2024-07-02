@@ -1,18 +1,15 @@
 let taskList = localStorage.getItem("tasks") ? $.parseJSON(localStorage.getItem("tasks")) : [];
 let nextId = localStorage.getItem("nextId") ? $.parseJSON(localStorage.getItem("nextId")) : 0;
 
-// Todo: create a function to generate a unique task id
+
 function generateTaskId() {
     nextId++;
     localStorage.setItem("nextId", JSON.stringify(nextId));
     return nextId;
 }
 
-
-
-
 function createTaskCard(task) {
-  // Create a div element for the task card
+
   const card = $("div");-
   card.addClass("card border-light mb-3 lane flex-grow-1");
 
@@ -29,7 +26,7 @@ function createTaskCard(task) {
         </div>
     `);
 
-  // Add event listener to the delete button
+  
   const deleteButton = card.find("button.delete-task");
   deleteButton.click(handleDeleteTask);
 
@@ -56,14 +53,16 @@ function createTaskCard(task) {
   }
 
 
-  return card;
+return card;
 }
-// Todo: create a function to render the task list and make cards draggable
-function renderTaskList() {
-  taskList.forEach((task) => {
-    createTaskCard(task);
-  });
-}
+
+
+//function renderTaskList() {
+  //taskList.forEach((task) => {
+    //createTaskCard(task);
+  //});
+//}
+
 
 // // Todo: create a function to handle adding a new task
 // function handleAddTask(event) {
@@ -125,9 +124,9 @@ function handleDeleteTask(event) {
   }
 }
 
-// Todo: create a function to handle dropping a task into a new status lane
+
 function handleDrop(event, ui) {
-  // Get the task card element being dropped
+
   const taskCard = ui.draggable[0];
 
   // Get the task id associated with the task card
@@ -152,7 +151,7 @@ function handleDrop(event, ui) {
   }
 }
 
-// Connect the handleDrop function to the HTML using jQuery UI's droppable feature
+
 $(".status-lane").droppable({
   drop: handleDrop,
 });
@@ -163,18 +162,19 @@ $(document).ready(function() {
     renderTaskList(); // Call the function to render the task list
 });
 
+    
+
   $("#taskForm").submit(function (event) {
     event.preventDefault();
 
-    // Get form values
     const name = $("#taskName").val();
     const description = $("#taskType").val();
     const dueDate = $("#dueDate").val();
-    // const status = document.getElementById("task-status").value;
+    const status = "To Do"; 
 
-    // Create a new task object
+  
     const newTask = {
-      id: generateTaskId(), // Generate a unique task id
+      id: generateTaskId(), 
       name: name,
       description: description,
       dueDate: dueDate,
@@ -183,9 +183,6 @@ $(document).ready(function() {
 
     createTaskCard(newTask);
 
-    console.log("this is my value:", newTask);
-
-    // Close the modal
     $("#formModal").modal("hide");
   });
 
@@ -195,9 +192,9 @@ $(document).ready(function() {
   });
 
 
-// Function to render the task list when the page loads
+
 function renderTaskList() {
-  // Check if taskList is not null before iterating over it
+  
   if (taskList) {
     taskList.forEach((task) => {
       createTaskCard(task);
