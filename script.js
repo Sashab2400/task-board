@@ -1,5 +1,5 @@
-let taskList = localStorage.getItem("tasks") ? $.parseJSON(localStorage.getItem("tasks")) : [];
-let nextId = localStorage.getItem("nextId") ? $.parseJSON(localStorage.getItem("nextId")) : 0;
+let taskList = localStorage.getItem("tasks") ? JSON.parse(localStorage.getItem("tasks")) : [];
+let nextId = localStorage.getItem("nextId") ? JSON.parse(localStorage.getItem("nextId")) : 0;
 
 
 function generateTaskId() {
@@ -11,46 +11,54 @@ function generateTaskId() {
 function createTaskCard(task) {
 
   const card = $("div");-
-  card.addClass("card border-light mb-3 lane flex-grow-1");
+  card.addClass("card border-light mb-3 task-card");
 
   // Set the task card content
   card.html(`
         <div class="card-header bg-light">
             <h5 class="card-title">${task.name}</h5>
-            <button class="delete-task">Delete</button> <!-- Add a delete button -->
+            <button class="delete-task">Delete</button> 
         </div>
         <div class="card-body">
             <p class="card-text">Description: ${task.description}</p>
             <p class="card-text">Due Date: ${task.dueDate}</p>
-            <p class="card-text">Status: ${task.status}</p>
         </div>
     `);
 
   
   const deleteButton = card.find("button.delete-task");
   deleteButton.click(handleDeleteTask);
+  if(task.dueDate&&task.status!=="done"){
+    const today=dayjs()
+    if(today.isSame(task.dueDate,'day')){
+      card.addClass("bg-warning text-white")
+    }
+    else if(today.isAfter(task.dueDate)){
+      card.addClass("bg-danger text-white")
+    }
+  }
 
   // Determine which swim lane to append the card based on the task status
-  let lane;
-  switch (task.status) {
-    case "To Do":
-      lane = $("#to-do");
-      break;
-    case "In Progress":
-      lane = $("#in-progress");
-      break;
-    case "Done":
-      lane = $("#done");
-      break;
-    default:
-      lane = $("#to-do"); // Default to 'To Do' lane
-  }
+  // let lane;
+  // switch (task.status) {
+  //   case "To Do":
+  //     lane = $("#to-do");
+  //     break;
+  //   case "In Progress":
+  //     lane = $("#in-progress");
+  //     break;
+  //   case "Done":
+  //     lane = $("#done");
+  //     break;
+  //   default:
+  //     lane = $("#to-do"); // Default to 'To Do' lane
+  // }
 
-  // Append the card to the appropriate swim lane
-  if (lane) {
-    const test = $("todo-cards");
-    console.log(test)
-  }
+  // // Append the card to the appropriate swim lane
+  // if (lane) {
+  //   const test = $("todo-cards");
+  //   console.log(test)
+  // }
 
 
 return card;
@@ -64,42 +72,45 @@ return card;
 //}
 
 
-// // Todo: create a function to handle adding a new task
-// function handleAddTask(event) {
-//   event.preventDefault(); // Prevent the form from submitting
 
-//   console.log("hit");
+function handleAddTask(event) {
+   event.preventDefault(); // Prevent the form from submitting
 
-//   // Retrieve task details from the form fields
-//   const name = document.getElementById("task-name").value;
-//   const description = document.getElementById("task-description").value;
-//   const dueDate = document.getElementById("due-date").value;
+   console.log("hit");
+
+   const name = $("#taskName").val()
+   const description = $("#description").val()
+   const dueDate = $("#dueDate").val()
 //   const status = document.getElementById("task-status").value;
 
-//   // Create a new task object
-//   const newTask = {
-//     id: generateTaskId(), // Generate a unique task id
-//     name: name,
-//     description: description,
-//     dueDate: dueDate,
-//     status: status,
-//   };
+
+   const newTask = {
+     id: generateTaskId(), // Generate a unique task id
+     name: name,
+     description: description,
+     dueDate: dueDate,
+     status: "to-do",
+   };
 
 //   // Add the new task to the taskList array
-//   taskList.push(newTask);
+   taskList.push(newTask);
 
 //   createTaskCard(newTask);
 //   document.getElementById("task-form").reset();
 
 //   // Save the updated taskList array to localStorage
-//   localStorage.setItem("tasks", JSON.stringify(taskList));
+   localStorage.setItem("tasks", JSON.stringify(taskList));
+   renderTaskList()
+   $("#taskName").val("")
+   $("#description").val("")
+   $("#dueDate").val("")
 
 //   // Create a task card for the new task and render it on the page
 //   createTaskCard(newTask);
 
 //   // Optionally, you can reset the form fields after adding the task
 //   document.getElementById("task-form").reset();
-// }
+ }
 
 // Todo: create a function to handle deleting a task
 function handleDeleteTask(event) {
@@ -152,52 +163,67 @@ function handleDrop(event, ui) {
 }
 
 
-$(".status-lane").droppable({
-  drop: handleDrop,
-});
+// $(".status-lane").droppable({
+//   drop: handleDrop,
+// });
 
 
 $(document).ready(function() {
-    let now = dayjs();
     renderTaskList(); // Call the function to render the task list
+    $("#taskForm").on("submit",handleAddTask)
+    $(".lane").droppable({accept:".task-card",drop: handleDrop})
 });
 
     
 
-  $("#taskForm").submit(function (event) {
-    event.preventDefault();
+  // $("#taskForm").submit(function (event) {
+  //   event.preventDefault();
 
-    const name = $("#taskName").val();
-    const description = $("#taskType").val();
-    const dueDate = $("#dueDate").val();
-    const status = "To Do"; 
+  //   const name = $("#taskName").val();
+  //   const description = $("#taskType").val();
+  //   const dueDate = $("#dueDate").val();
+  //   const status = "To Do"; 
 
   
-    const newTask = {
-      id: generateTaskId(), 
-      name: name,
-      description: description,
-      dueDate: dueDate,
-      //   status: status,
-    };
+  //   const newTask = {
+  //     id: generateTaskId(), 
+  //     name: name,
+  //     description: description,
+  //     dueDate: dueDate,
+  //     //   status: status,
+  //   };
 
-    createTaskCard(newTask);
+  //   createTaskCard(newTask);
 
-    $("#formModal").modal("hide");
-  });
+  //   $("#formModal").modal("hide");
+  // });
 
-  $(document).on("click", "#add-task-btn", function (event) {
-    event.preventDefault();
-    $("#taskForm").submit();
-  });
+  // $(document).on("click", "#add-task-btn", function (event) {
+  //   event.preventDefault();
+  //   $("#taskForm").submit();
+  // });
 
 
 
 function renderTaskList() {
-  
+  const todoList=$("#todo-cards")
+  todoList.empty()
+
+  const inProgress=$("#in-progress-cards")
+  inProgress.empty()
+
+  const doneList=$("#done-cards")
+  doneList.empty()
+
+
   if (taskList) {
     taskList.forEach((task) => {
-      createTaskCard(task);
+      if(task.status==="to-do")
+      todoList.append(createTaskCard(task));
+    else if(task.status==="in-progress")
+      inProgress.append(createTaskCard(task));
+    else 
+    doneList.append(createTaskCard(task));
     });
   }
 }
