@@ -10,9 +10,9 @@ function generateTaskId() {
 
 function createTaskCard(task) {
 
-  const card = $("div");-
+  const card = $("<div>");-
   card.addClass("card border-light mb-3 task-card");
-
+  card.attr("data-id", task.id)
   // Set the task card content
   card.html(`
         <div class="card-header bg-light">
@@ -27,7 +27,8 @@ function createTaskCard(task) {
 
   
   const deleteButton = card.find("button.delete-task");
-  deleteButton.click(handleDeleteTask);
+  console.log(deleteButton)
+  deleteButton.on("click",handleDeleteTask);
   if(task.dueDate&&task.status!=="done"){
     const today=dayjs()
     if(today.isSame(task.dueDate,'day')){
@@ -120,18 +121,16 @@ function handleDeleteTask(event) {
     const taskCard = event.target.closest(".card");
 
     // Find the task id associated with the task card
-    const taskId = parseInt(taskCard.dataset.taskId);
+    const taskId = parseInt(taskCard.dataset.id);
 
     // Remove the task from the taskList array
     taskList = taskList.filter((task) => task.id !== taskId);
 
     // Save the updated taskList array to localStorage
     localStorage.setItem("tasks", JSON.stringify(taskList));
+    renderTaskList()
 
-    // Remove the task card from the DOM
-    taskCard.remove();
-
-    document.addEventListener("click", handleDeleteTask);
+  
   }
 }
 
@@ -141,7 +140,7 @@ function handleDrop(event, ui) {
   const taskCard = ui.draggable[0];
 
   // Get the task id associated with the task card
-  const taskId = parseInt(taskCard.dataset.taskId);
+  const taskId = parseInt(taskCard.dataset.id);
 
   // Determine the status lane where the task is being dropped
   const newStatus = event.target.id; // Assuming the status lane IDs match the task status values
@@ -157,8 +156,7 @@ function handleDrop(event, ui) {
     localStorage.setItem("tasks", JSON.stringify(taskList));
 
     // Move the task card to the new status lane in the DOM
-    const newLane = document.getElementById(newStatus);
-    newLane.querySelector(".card-body").appendChild(taskCard);
+    renderTaskList()
   }
 }
 
@@ -217,13 +215,18 @@ function renderTaskList() {
 
 
   if (taskList) {
+    console.log(taskList)
     taskList.forEach((task) => {
-      if(task.status==="to-do")
-      todoList.append(createTaskCard(task));
+      if(task.status==="to-do") {
+        console.log("hit")
+        todoList.append(createTaskCard(task));
+      }
+       
     else if(task.status==="in-progress")
       inProgress.append(createTaskCard(task));
     else 
     doneList.append(createTaskCard(task));
     });
   }
+  $(".task-card").draggable({opacity:0.7,zIndex:100})
 }
