@@ -4,11 +4,8 @@
 
 Create a simple task board application that allows a team to manage project tasks by modifying starter code. This app will run in the browser and feature dynamically updated HTML and CSS powered by jQuery.
 
-You'll need to use the [Day.js](https://day.js.org/en/) library to work with dates. Be sure to read the documentation carefully and concentrate on using Day.js in the browser.
-
 ## User Story
 
-```md
 AS A project team member with multiple tasks to organize
 I WANT a task board 
 SO THAT I can add individual project tasks, manage their state of progress and track overall project progress accordingly
@@ -16,7 +13,6 @@ SO THAT I can add individual project tasks, manage their state of progress and t
 
 ## Acceptance Criteria
 
-```md
 GIVEN a task board to manage a project
 WHEN I open the task board
 THEN the list of project tasks is displayed in columns representing the task progress state (Not Yet Started, In Progress, Completed)
